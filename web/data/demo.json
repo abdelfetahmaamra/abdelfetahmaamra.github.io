@@ -1,0 +1,285 @@
+{
+"store": {
+"name": {
+"ar": "رونق الحياة",
+"fr": "Ronaq El Hayat"
+},
+"tagline": {
+"ar": "بارافارماسي للمرأة",
+"fr": "Parapharmacie pour elle"
+},
+"phone": "0676 61 04 57",
+"whatsapp": "213676610457",
+"freeShippingFrom": 0,
+"confirmDelay": {
+"ar": "24 ساعة",
+"fr": "24 h"
+},
+"deliveryDelay": {
+"ar": "2 إلى 5 أيام",
+"fr": "2 à 5 jours"
+},
+"zoneFees": {
+"A": {
+"home": 400,
+"desk": 250
+},
+"N": {
+"home": 600,
+"desk": 400
+},
+"S": {
+"home": 900,
+"desk": 600
+}
+},
+"fbPixelId": null,
+"tiktokPixelId": null,
+"defaultCarrier": null
+},
+"categories": [
+{
+"slug": "face",
+"name": {
+"ar": "الوجه",
+"fr": "Visage"
+},
+"parent": null
+},
+{
+"slug": "hair",
+"name": {
+"ar": "الشعر",
+"fr": "Cheveux"
+},
+"parent": null
+},
+{
+"slug": "supp",
+"name": {
+"ar": "المكملات",
+"fr": "Compléments"
+},
+"parent": null
+},
+{
+"slug": "intimate",
+"name": {
+"ar": "العناية الحميمة",
+"fr": "Hygiène intime"
+},
+"parent": null
+},
+{
+"slug": "sun",
+"name": {
+"ar": "الحماية من الشمس",
+"fr": "Solaire"
+},
+"parent": null
+}
+],
+"products": [
+{
+"id": "demo-serum-vitamine-c",
+"slug": "serum-vitamine-c",
+"name": {
+"ar": "سيروم فيتامين C",
+"fr": "Sérum Vitamine C"
+},
+"size": {
+"ar": "30 مل",
+"fr": "30 ml"
+},
+"desc": {
+"ar": "[وصف قصير للمنتج ولمن هو موجّه.]",
+"fr": "[Courte description du produit et à qui il s'adresse.]"
+},
+"benefits": null,
+"usage": null,
+"price": 2900,
+"compareAt": null,
+"cat": "face",
+"images": [],
+"shape": "dropper",
+"tint": "rose",
+"inStock": true
+},
+{
+"id": "demo-creme-acide-hyaluronique",
+"slug": "creme-acide-hyaluronique",
+"name": {
+"ar": "كريم مرطب بحمض الهيالورونيك",
+"fr": "Crème hydratante à l'acide hyaluronique"
+},
+"size": {
+"ar": "50 مل",
+"fr": "50 ml"
+},
+"desc": {
+"ar": "[وصف قصير للمنتج ولمن هو موجّه.]",
+"fr": "[Courte description du produit et à qui il s'adresse.]"
+},
+"benefits": null,
+"usage": null,
+"price": 2400,
+"compareAt": null,
+"cat": "face",
+"images": [],
+"shape": "jar",
+"tint": "sage",
+"inStock": true
+},
+{
+"id": "demo-huile-de-ricin",
+"slug": "huile-de-ricin",
+"name": {
+"ar": "زيت الخروع للشعر",
+"fr": "Huile de ricin pour cheveux"
+},
+"size": {
+"ar": "100 مل",
+"fr": "100 ml"
+},
+"desc": {
+"ar": "[وصف قصير للمنتج ولمن هو موجّه.]",
+"fr": "[Courte description du produit et à qui il s'adresse.]"
+},
+"benefits": null,
+"usage": null,
+"price": 1200,
+"compareAt": null,
+"cat": "hair",
+"images": [],
+"shape": "dropper",
+"tint": "sand",
+"inStock": true
+},
+{
+"id": "demo-shampooing-anti-chute",
+"slug": "shampooing-anti-chute",
+"name": {
+"ar": "شامبو ضد تساقط الشعر",
+"fr": "Shampooing anti-chute"
+},
+"size": {
+"ar": "250 مل",
+"fr": "250 ml"
+},
+"desc": {
+"ar": "[وصف قصير للمنتج ولمن هو موجّه.]",
+"fr": "[Courte description du produit et à qui il s'adresse.]"
+},
+"benefits": null,
+"usage": null,
+"price": 1800,
+"compareAt": null,
+"cat": "hair",
+"images": [],
+"shape": "tube",
+"tint": "plum",
+"inStock": true
+},
+{
+"id": "demo-fer-acide-folique",
+"slug": "fer-acide-folique",
+"name": {
+"ar": "الحديد + حمض الفوليك",
+"fr": "Fer + acide folique"
+},
+"size": {
+"ar": "30 كبسولة",
+"fr": "30 gélules"
+},
+"desc": {
+"ar": "[وصف قصير للمنتج ولمن هو موجّه.]",
+"fr": "[Courte description du produit et à qui il s'adresse.]"
+},
+"benefits": null,
+"usage": null,
+"price": 1600,
+"compareAt": null,
+"cat": "supp",
+"images": [],
+"shape": "jar",
+"tint": "rose",
+"inStock": true
+},
+{
+"id": "demo-collagene-marin",
+"slug": "collagene-marin",
+"name": {
+"ar": "كولاجين بحري",
+"fr": "Collagène marin"
+},
+"size": {
+"ar": "30 كيس",
+"fr": "30 sachets"
+},
+"desc": {
+"ar": "[وصف قصير للمنتج ولمن هو موجّه.]",
+"fr": "[Courte description du produit et à qui il s'adresse.]"
+},
+"benefits": null,
+"usage": null,
+"price": 3500,
+"compareAt": null,
+"cat": "supp",
+"images": [],
+"shape": "jar",
+"tint": "sky",
+"inStock": true
+},
+{
+"id": "demo-gel-intime-doux",
+"slug": "gel-intime-doux",
+"name": {
+"ar": "غسول حميمي لطيف",
+"fr": "Gel lavant intime doux"
+},
+"size": {
+"ar": "200 مل",
+"fr": "200 ml"
+},
+"desc": {
+"ar": "[وصف قصير للمنتج ولمن هو موجّه.]",
+"fr": "[Courte description du produit et à qui il s'adresse.]"
+},
+"benefits": null,
+"usage": null,
+"price": 1100,
+"compareAt": null,
+"cat": "intimate",
+"images": [],
+"shape": "tube",
+"tint": "sage",
+"inStock": true
+},
+{
+"id": "demo-ecran-solaire-spf50",
+"slug": "ecran-solaire-spf50",
+"name": {
+"ar": "واقي شمس SPF 50+",
+"fr": "Écran solaire SPF 50+"
+},
+"size": {
+"ar": "50 مل",
+"fr": "50 ml"
+},
+"desc": {
+"ar": "[وصف قصير للمنتج ولمن هو موجّه.]",
+"fr": "[Courte description du produit et à qui il s'adresse.]"
+},
+"benefits": null,
+"usage": null,
+"price": 2200,
+"compareAt": null,
+"cat": "sun",
+"images": [],
+"shape": "tube",
+"tint": "sand",
+"inStock": true
+}
+],
+"rates": []
+}
