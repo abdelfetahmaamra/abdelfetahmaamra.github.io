@@ -5,10 +5,7 @@ export type Block = { h?: string; p?: string[]; list?: string[] };
 export type InfoPage = { title: string; kicker: string; intro: string; blocks: Block[] };
 export type InfoSlug = "about" | "delivery" | "returns" | "privacy" | "terms";
 
-export const NAV = {
-  ar: { info: "معلومات", about: "من نحن", contact: "اتصلي بنا", delivery: "التوصيل والدفع", returns: "الاستبدال والإرجاع", faq: "الأسئلة الشائعة", privacy: "سياسة الخصوصية", terms: "الشروط والأحكام", updated: "آخر تحديث: سبتمبر 2026" },
-  fr: { info: "Informations", about: "Qui sommes-nous", contact: "Contact", delivery: "Livraison et paiement", returns: "Échange et retour", faq: "Questions fréquentes", privacy: "Confidentialité", terms: "Conditions générales", updated: "Dernière mise à jour : septembre 2026" },
-};
+export { NAV } from "./infoNav";
 
 export const INFO: Record<"ar" | "fr", Record<InfoSlug, InfoPage>> = {
   ar: {

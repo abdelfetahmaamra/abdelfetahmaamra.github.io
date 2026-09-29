@@ -23,7 +23,9 @@ const CACHE_KEY = "ronaq_sf_v2";
 export function loadStore(onFresh: (d: StoreData) => void): Promise<StoreData> {
   const cached = lsGet<{ at: number; d: StoreData } | null>(CACHE_KEY, null);
   const url = DEMO ? "/data/demo.json" : SITE + "/api/storefront";
-  const fresh = () => getJSON<StoreData>(url, 15000).then((d) => { lsSet(CACHE_KEY, { at: Date.now(), d }); return d; });
+  // The first request may already be in flight from index.html (see earlyCatalog in vite.config.ts).
+  const early = (window as any).__sf as Promise<StoreData> | undefined; (window as any).__sf = undefined;
+  const fresh = () => (early && !DEMO ? early.catch(() => getJSON<StoreData>(url, 15000)) : getJSON<StoreData>(url, 15000)).then((d) => { lsSet(CACHE_KEY, { at: Date.now(), d }); return d; });
   if (cached && cached.d) {
     if (Date.now() - cached.at > 60000) fresh().then(onFresh, () => {});
     return Promise.resolve(cached.d);

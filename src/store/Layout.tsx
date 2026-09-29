@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router";
 import { DEMO } from "../lib/config";
 import { bump, cleanPhone } from "../lib/format";
 import { Icon, Logo } from "../lib/icons";
-import { NAV } from "./infoTexts";
+import { NAV } from "./infoNav";
 import { useStore } from "./StoreContext";
 
 /** Fade-in sections (.rv) as they scroll into view. Re-run whenever the page content changes. */

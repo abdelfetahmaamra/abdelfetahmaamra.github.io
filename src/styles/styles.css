@@ -220,7 +220,7 @@ button,input,select{font:inherit;color:inherit}
 .ftr a:hover{color:#fff}
 .ftr .col{display:flex;flex-direction:column;gap:10px}
 .ftr .col b{font-size:15px}
-.ftr .bot{border-top:1px solid #4A2C3A;margin-top:36px;padding-top:20px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#B8A2AB}
+.ftr .bot{border-top:1px solid #4A2C3A;margin-top:36px;padding-top:20px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#CDBAC2}
 @media (max-width:860px){.ftr .cols{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.ftr .cols{grid-template-columns:1fr}}
 

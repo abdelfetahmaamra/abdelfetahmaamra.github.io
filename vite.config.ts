@@ -12,7 +12,7 @@ import { readFileSync } from "node:fs";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
-    plugins: [react(), serviceWorker()],
+    plugins: [react(), serviceWorker(), earlyCatalog(env.CONVEX_SITE_URL || ""), siteMeta(env.SITE_URL || "")],
     define: {
       __CONVEX_URL__: JSON.stringify(env.CONVEX_URL || ""),
       __CONVEX_SITE__: JSON.stringify(env.CONVEX_SITE_URL || ""),
@@ -21,6 +21,46 @@ export default defineConfig(({ mode }) => {
     build: { target: ["es2020", "chrome80", "safari14"] },
   };
 });
+
+/**
+ * Start downloading the catalog from the HTML itself, in parallel with the app bundle
+ * (instead of after it): saves one full round trip on 3G/4G. src/store/api.ts picks it up.
+ */
+function earlyCatalog(site: string): Plugin {
+  const s = site.replace(/\/+$/, "");
+  return {
+    name: "ronaq-early-catalog",
+    transformIndexHtml() {
+      if (!s) return [];
+      return [
+        { tag: "link", attrs: { rel: "preconnect", href: s, crossorigin: "" }, injectTo: "head" },
+        { tag: "script", children: `if(!/^\\/admin/.test(location.pathname)){window.__sf=fetch(${JSON.stringify(s + "/api/storefront")},{credentials:"omit"}).then(function(r){if(!r.ok)throw r.status;return r.json()});window.__sf.catch(function(){})}`, injectTo: "head" },
+      ];
+    },
+  };
+}
+
+/** Share previews (Facebook, WhatsApp, TikTok), robots.txt and sitemap.xml, all built from SITE_URL. */
+const PAGES = ["/", "/cart", "/delivery", "/returns", "/faq", "/contact", "/about", "/privacy", "/terms"];
+function siteMeta(site: string): Plugin {
+  const url = site.replace(/\/+$/, "");
+  return {
+    name: "ronaq-site-meta",
+    transformIndexHtml(html) {
+      if (!url) return html.replace(/<!--SEO-->[\s\S]*?<!--\/SEO-->/, "");
+      return html.replace(/%SITE_URL%/g, url);
+    },
+    generateBundle() {
+      const robots = "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /merci\n" + (url ? "\nSitemap: " + url + "/sitemap.xml\n" : "");
+      this.emitFile({ type: "asset", fileName: "robots.txt", source: robots });
+      if (!url) return;
+      const today = new Date().toISOString().slice(0, 10);
+      const sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+        PAGES.map((p) => `  <url><loc>${url}${p}</loc><lastmod>${today}</lastmod></url>`).join("\n") + "\n</urlset>\n";
+      this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sm });
+    },
+  };
+}
 
 /** Emit sw.js with a version derived from the build so every deploy refreshes phone caches. */
 function serviceWorker(): Plugin {

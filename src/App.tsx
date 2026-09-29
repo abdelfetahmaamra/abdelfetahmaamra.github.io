@@ -2,14 +2,20 @@ import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router";
 import { CartPage } from "./store/CartPage";
 import { Home } from "./store/Home";
-import { ContactPage, DeliveryPage, FaqPage, InfoPageView } from "./store/InfoPages";
 import { Layout } from "./store/Layout";
 import { ProductPage } from "./store/ProductPage";
 import { StoreProvider } from "./store/StoreContext";
-import { Thanks } from "./store/Thanks";
+import { ErrorBoundary } from "./ErrorBoundary";
 
 // The admin panel (and the Convex client it needs) is a separate download, never loaded by shoppers.
 const Admin = lazy(() => import("./admin/Admin"));
+// Pages rarely used as a landing page load on demand, keeping the first download small.
+const info = () => import("./store/InfoPages");
+const InfoPageView = lazy(() => info().then((m) => ({ default: m.InfoPageView })));
+const DeliveryPage = lazy(() => info().then((m) => ({ default: m.DeliveryPage })));
+const FaqPage = lazy(() => info().then((m) => ({ default: m.FaqPage })));
+const ContactPage = lazy(() => info().then((m) => ({ default: m.ContactPage })));
+const Thanks = lazy(() => import("./store/Thanks").then((m) => ({ default: m.Thanks })));
 
 const TITLES: Record<string, string> = {
   "/": "رونق الحياة · بارافارماسي للمرأة — الدفع عند الاستلام",
@@ -46,6 +52,7 @@ function StoreRoutes() {
   return (
     <Layout>
       <Titled>
+        <Suspense fallback={<Skeleton />}>
         <Routes>
           <Route index element={<Home />} />
           <Route path="product" element={<ProductPage />} />
@@ -60,6 +67,7 @@ function StoreRoutes() {
           <Route path="contact" element={<ContactPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </Titled>
     </Layout>
   );
@@ -67,9 +75,11 @@ function StoreRoutes() {
 
 export function App() {
   return (
+    <ErrorBoundary>
     <Routes>
       <Route path="/admin/*" element={<Suspense fallback={<p style={{ padding: 40, textAlign: "center" }}>…</p>}><Admin /></Suspense>} />
       <Route path="/*" element={<Store />} />
     </Routes>
+    </ErrorBoundary>
   );
 }

@@ -73,7 +73,7 @@ export function Checkout({ withQty, items }: { withQty?: boolean; items: (q: num
   const live = useRef({ name, phone, wil, commune, lines, total }); live.current = { name, phone, wil, commune, lines, total };
   const started = useRef(false), draftTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   function touched() {
-    if (!started.current) { started.current = true; track("InitiateCheckout", { value: live.current.total, ids: live.current.lines.map((l) => l.id) }); }
+    if (!started.current) { started.current = true; import("./Thanks").catch(() => {}); track("InitiateCheckout", { value: live.current.total, ids: live.current.lines.map((l) => l.id) }); }
     clearTimeout(draftTimer.current);
     draftTimer.current = setTimeout(() => {
       const s = live.current; if (!validPhone(s.phone) || DEMO) return;
