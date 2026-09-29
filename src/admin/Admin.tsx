@@ -52,17 +52,32 @@ function Session({ lang, switchLang }: { lang: Lang; switchLang: () => void }) {
 
 function Login({ lang, err, onToken, onErr }: { lang: Lang; err: string; onToken: (t: string) => void; onErr: (e: string) => void }) {
   const convex = useConvex(), t = L[lang];
-  const [email, setEmail] = useState(""), [pw, setPw] = useState(""), [busy, setBusy] = useState(false);
+  const [email, setEmail] = useState(""), [pw, setPw] = useState(""), [busy, setBusy] = useState(false), [show, setShow] = useState(false);
   function submit(e: FormEvent) {
     e.preventDefault(); setBusy(true);
-    convex.action(api.authNode.login, { email, password: pw }).then((r: any) => onToken(r.token), (e2) => { setBusy(false); onErr(errMsg(e2)); });
+    convex.action(api.authNode.login, { email: email.trim(), password: pw }).then((r: any) => onToken(r.token), (e2: any) => {
+      setBusy(false);
+      const code = e2 && e2.data && e2.data.code;
+      onErr(code === "bad_login" ? t.badLogin : code === "throttled" ? t.throttled : errMsg(e2));
+    });
   }
   return (
     <div className="login"><form className="panel" noValidate onSubmit={submit}>
       <h1 className="disp" style={{ margin: 0, fontSize: 28 }}>{t.login}</h1>
       {err && <div className="alert">{err}</div>}
       <div className="f"><label htmlFor="em">{t.email}</label><input id="em" type="email" autoComplete="username" required autoFocus value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-      <div className="f"><label htmlFor="pw">{t.password}</label><input id="pw" type="password" autoComplete="current-password" required value={pw} onChange={(e) => setPw(e.target.value)} /></div>
+      <div className="f">
+        <label htmlFor="pw">{t.password}</label>
+        <div style={{ position: "relative" }}>
+          <input id="pw" type={show ? "text" : "password"} autoComplete="current-password" required dir="ltr" value={pw} onChange={(e) => setPw(e.target.value)} style={{ paddingInlineEnd: 52 }} />
+          <button type="button" onClick={() => setShow((s) => !s)} aria-label={show ? t.hidePw : t.showPw} aria-pressed={show} title={show ? t.hidePw : t.showPw}
+            style={{ position: "absolute", insetInlineEnd: 4, top: 4, bottom: 4, width: 44, border: 0, borderRadius: 10, background: "transparent", cursor: "pointer", color: "var(--soft)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" />{show && <path d="M3 3l18 18" />}
+            </svg>
+          </button>
+        </div>
+      </div>
       <button className="btn lg" type="submit" disabled={busy}>{t.enter}</button>
     </form></div>
   );
