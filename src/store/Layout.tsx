@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router";
 import { DEMO } from "../lib/config";
 import { bump, cleanPhone } from "../lib/format";
 import { Icon, Logo } from "../lib/icons";
+import { NAV } from "./infoTexts";
 import { useStore } from "./StoreContext";
 
 /** Fade-in sections (.rv) as they scroll into view. Re-run whenever the page content changes. */
@@ -65,17 +66,20 @@ function Header() {
 }
 
 function Footer() {
-  const { t, tx, data } = useStore(), S = data.store;
+  const { t, tx, data, lang } = useStore(), S = data.store, n = NAV[lang];
   const wa = String(S.whatsapp || "").replace(/\D/g, "");
   return (
     <footer className="ftr"><div className="wrap">
       <div className="cols">
         <div className="col"><Link className="logo" to="/" style={{ color: "#fff" }}><Logo s={26} /><b>{tx(S.name)}</b></Link><span className="c" style={{ lineHeight: 1.7, maxWidth: 320 }}>{t.about}</span></div>
         <div className="col"><b>{t.fShop}</b>{data.categories.filter((c) => !c.parent).slice(0, 5).map((c) => <Link key={c.slug} to={"/?cat=" + encodeURIComponent(c.slug) + "#catalog"}>{tx(c.name)}</Link>)}</div>
-        <div className="col"><b>{t.fHelp}</b><Link to="/#how">{t.fHow}</Link><Link to="/cart">{t.cart}</Link></div>
-        <div className="col"><b>{t.fContact}</b><a href={"tel:" + cleanPhone(S.phone)} dir="ltr">{S.phone}</a>{wa && <a href={"https://wa.me/" + wa} target="_blank" rel="noopener">WhatsApp</a>}</div>
+        <div className="col"><b>{t.fHelp}</b><Link to="/#how">{t.fHow}</Link><Link to="/delivery">{n.delivery}</Link><Link to="/returns">{n.returns}</Link><Link to="/faq">{n.faq}</Link><Link to="/cart">{t.cart}</Link></div>
+        <div className="col"><b>{t.fContact}</b><Link to="/contact">{n.contact}</Link><a href={"tel:" + cleanPhone(S.phone)} dir="ltr" style={{ alignSelf: "flex-start" }}>{S.phone}</a>{wa && <a href={"https://wa.me/" + wa} target="_blank" rel="noopener">WhatsApp</a>}<Link to="/about">{n.about}</Link></div>
       </div>
-      <div className="bot"><span>{t.disclaimer}</span><span>© {new Date().getFullYear()} {tx(S.name)}</span></div>
+      <div className="bot">
+        <span>{t.disclaimer}</span>
+        <span style={{ display: "flex", gap: 16, flexWrap: "wrap" }}><Link to="/privacy">{n.privacy}</Link><Link to="/terms">{n.terms}</Link><span>© {new Date().getFullYear()} {tx(S.name)}</span></span>
+      </div>
     </div></footer>
   );
 }

@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router";
 import { CartPage } from "./store/CartPage";
 import { Home } from "./store/Home";
+import { ContactPage, DeliveryPage, FaqPage, InfoPageView } from "./store/InfoPages";
 import { Layout } from "./store/Layout";
 import { ProductPage } from "./store/ProductPage";
 import { StoreProvider } from "./store/StoreContext";
@@ -50,6 +51,13 @@ function StoreRoutes() {
           <Route path="product" element={<ProductPage />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="merci" element={<Thanks />} />
+          <Route path="about" element={<InfoPageView slug="about" />} />
+          <Route path="delivery" element={<DeliveryPage />} />
+          <Route path="returns" element={<InfoPageView slug="returns" />} />
+          <Route path="privacy" element={<InfoPageView slug="privacy" />} />
+          <Route path="terms" element={<InfoPageView slug="terms" />} />
+          <Route path="faq" element={<FaqPage />} />
+          <Route path="contact" element={<ContactPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Titled>

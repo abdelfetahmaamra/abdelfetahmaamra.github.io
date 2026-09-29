@@ -327,3 +327,29 @@ button,input,select{font:inherit;color:inherit}
 /* Reserve the header's space before JS draws it (no layout shift on slow phones) */
 #hdr{display:block;min-height:113px}
 @media (max-width:760px){.hero h1.up,.hero p.up{animation-duration:.5s;animation-delay:0s}}
+
+/* ---------- information pages (about, delivery, returns, faq, contact, privacy, terms) ---------- */
+.info{max-width:880px}
+.info-hd{padding:48px 0 8px;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.info-hd h1{margin:0;font-size:clamp(32px,4.4vw,52px);line-height:1.15}
+.info-hd p{margin:0;font-size:clamp(16px,1.6vw,18px);line-height:1.8;color:var(--soft);max-width:680px}
+.info-body{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+.info-sec{border-radius:22px;padding:clamp(18px,3vw,30px)}
+.info-sec h2{margin:0 0 10px;font-family:var(--disp);font-weight:600;font-size:clamp(20px,2.4vw,26px);line-height:1.3}
+.info-sec p{margin:0 0 10px;line-height:1.85;color:var(--soft)}
+.info-sec p:last-child{margin-bottom:0}
+.info-sec .blist{margin-top:6px}
+.info-nav{margin-top:36px}
+a.chip{display:inline-flex;align-items:center;text-decoration:none;color:inherit}
+.info-upd{font-size:13px;margin:18px 0 0}
+.info-contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:18px;align-items:start;margin-top:24px}
+.info-contact .info-body{margin-top:0}
+@media (max-width:760px){.info-contact{grid-template-columns:1fr}}
+.info-card{display:flex;align-items:center;gap:14px;padding:18px;border-radius:20px;text-decoration:none;color:inherit}
+.info-card .ic{flex-shrink:0;width:48px;height:48px;border-radius:50%;background:var(--blush);color:var(--rose-d);display:flex;align-items:center;justify-content:center}
+.info-card b{display:block;font-size:16px}
+.info-card span span{color:var(--soft);font-size:15px}
+a.info-card:hover{border-color:var(--teal)}
+.f textarea{padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:#fff;font:inherit;font-size:16px;resize:vertical;width:100%;transition:border-color .2s,box-shadow .2s}
+.f textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 4px rgba(30,90,85,.14)}
+.info .opt{cursor:default}
