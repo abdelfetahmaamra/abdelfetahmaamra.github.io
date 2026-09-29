@@ -59,6 +59,11 @@ export const insertMember = internalMutation({
   },
 });
 
+export const reactivate = internalMutation({
+  args: { memberId: v.id("members") },
+  handler: async (ctx, { memberId }) => { await ctx.db.patch(memberId, { active: true }); },
+});
+
 export const patchPassword = internalMutation({
   args: { memberId: v.id("members"), passwordHash: v.string(), keepToken: v.optional(v.string()) },
   handler: async (ctx, { memberId, passwordHash, keepToken }) => {

@@ -53,6 +53,23 @@ export const createOwner = internalAction({
   },
 });
 
+/**
+ * CLI only (internal): forgotten password. Also re-enables the account and signs it out everywhere.
+ *   npx convex run authNode:resetPassword '{"email":"you@example.com","password":"a-new-long-password"}'
+ */
+export const resetPassword = internalAction({
+  args: { email: v.string(), password: v.string() },
+  handler: async (ctx, a): Promise<string> => {
+    checkPassword(a.password);
+    const email = a.email.trim().toLowerCase();
+    const m = await ctx.runQuery(internal.auth.memberByEmail, { email });
+    if (!m) throw new ConvexError({ code: "not_found", message: "No account with this email: " + email });
+    await ctx.runMutation(internal.auth.patchPassword, { memberId: m._id, passwordHash: hash(a.password) });
+    if (!m.active) await ctx.runMutation(internal.auth.reactivate, { memberId: m._id });
+    return "Password reset for " + email + " (" + m.role + ")";
+  },
+});
+
 /** Owner adds a team member. */
 export const addMember = action({
   args: { token: v.string(), email: v.string(), name: v.string(), role, password: v.string() },
