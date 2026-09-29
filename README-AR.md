@@ -12,10 +12,12 @@ ronaq/
 │   ├── meta.ts          Meta Conversions API
 │   ├── http.ts          واجهة المتجر العامة (/api/…)
 │   └── crons.ts         مزامنة حالات الطرود كل 30 دقيقة
-├── web/             الموقع (المتجر + لوحة التحكم) — ملفات ثابتة
-│   ├── index.html, product.html, cart.html, merci.html
-│   ├── admin.html
-│   └── assets/config.js   ← الملف الوحيد الذي تعدّلينه للربط
+├── src/             الموقع بـ React + Vite
+│   ├── store/           المتجر: الرئيسية، المنتج، السلة، الشكر، استمارة الطلب
+│   ├── admin/           لوحة التحكم (/admin) — تُحمَّل منفصلة عن المتجر
+│   └── styles/          التصميم (CSS)
+├── public/data/     الولايات والبلديات
+├── .env.production  ← روابط Convex لنسخة الإنتاج (الملف الوحيد الذي تعدّلينه للربط)
 └── tests/           اختبارات الخادم
 ```
 
@@ -28,10 +30,10 @@ ronaq/
 ```bash
 cd ronaq
 npm install
-npx convex dev          # سجّلي الدخول إلى Convex وأنشئي مشروعاً جديداً (مجاني)
+npm run dev             # يشغّل Convex والموقع معاً على http://localhost:5173
 ```
 
-اتركي هذه النافذة مفتوحة، فهي ترفع الكود إلى Convex عند كل تعديل. ثم في نافذة ثانية:
+اتركي هذه النافذة مفتوحة، فهي ترفع الكود إلى Convex عند كل تعديل، وتحدّث الموقع فوراً. المتجر على `http://localhost:5173` ولوحة التحكم على `http://localhost:5173/admin`. ثم في نافذة ثانية:
 
 ```bash
 npx convex run maintenance:seed
@@ -43,20 +45,15 @@ npx convex run authNode:createOwner '{"email":"you@example.com","name":"إسلا
 
 ## 2. ربط الموقع بـ Convex
 
-من لوحة Convex: **Settings › URL & Deploy Key**. انسخي رابطين:
+- **على جهازكِ:** لا شيء لتفعليه. `npm run dev` يكتب الروابط في `.env.local` ويستعملها الموقع تلقائياً.
+- **للإنتاج:** من لوحة Convex (نسخة Production): **Settings › URL & Deploy Key**. انسخي رابطين وضعيهما في `.env.production`:
 
-| الرابط | ينتهي بـ | أين تضعينه |
+| الرابط | ينتهي بـ | المتغير |
 |---|---|---|
-| Deployment URL | `.convex.cloud` | `convexUrl` |
-| HTTP Actions URL | `.convex.site` | `convexSite` |
+| Deployment URL | `.convex.cloud` | `CONVEX_URL` |
+| HTTP Actions URL | `.convex.site` | `CONVEX_SITE_URL` |
 
-ضعيهما في `web/assets/config.js`.
-
-للتجربة على جهازكِ:
-
-```bash
-npx serve web            # ثم افتحي http://localhost:3000 و http://localhost:3000/admin.html
-```
+لا تضعي أبداً مفتاح النشر (Deploy Key) في هذا الملف.
 
 ## 3. مفاتيح شركات التوصيل و Meta
 
@@ -84,11 +81,9 @@ npx serve web            # ثم افتحي http://localhost:3000 و http://local
    npx convex deploy
    ```
    ينشئ نسخة الإنتاج. أضيفي متغيرات البيئة لها أيضاً (نسخة Production في لوحة Convex)، وأعيدي `seed` و `createOwner` بإضافة `--prod`.
-2. **الموقع:** ضعي روابط نسخة الإنتاج في `web/assets/config.js`، ثم شغّلي `npm run build`. ينشئ مجلد `dist/` مضغوطاً وجاهزاً للنشر، فارفعي `dist/` (وليس `web/`) على:
-   - **Cloudflare Pages** (مجاني وسريع في الجزائر)،
-   - أو **Netlify Drop** (اسحبي المجلد فقط).
+2. **الموقع على Vercel:** ارفعي المشروع إلى GitHub، ثم في Vercel استوردي المستودع. اتركي **Root Directory** فارغاً، واختاري Framework **Vite**. الإعدادات الباقية في `vercel.json`، وكل `git push` ينشر نسخة جديدة تلقائياً.
 
-   بعدها اربطي اسم نطاقكِ.
+   بعدها اربطي اسم نطاقكِ، وضعيه في `ALLOWED_ORIGINS` في Convex.
 
 ---
 
@@ -137,7 +132,7 @@ npx serve web            # ثم افتحي http://localhost:3000 و http://local
 - **البلديات:** تُحمَّل فقط للولاية المختارة (1 إلى 2 KB). إن ضعفت الشبكة، تكتب الزبونة البلدية يدوياً.
 - **إرسال الطلب:** يعاد تلقائياً مرة واحدة إذا انقطع الاتصال، بدون تكرار الطلب.
 - **الوضع الخفيف:** على 2G/3G، أو مع «توفير البيانات»، أو على هاتف بذاكرة 2 GB أو أقل، تتوقف الحركات الزخرفية تلقائياً.
-- **بعد كل تعديل:** أعيدي `npm run build`، فهو يغيّر رقم نسخة التخزين حتى يرى الزبائن التحديث.
+- **بعد كل تعديل:** يكفي `git push`، فـ Vercel يبني الموقع من جديد ويغيّر رقم نسخة التخزين تلقائياً حتى يرى الزبائن التحديث.
 
 ## 8. للمطوّر
 

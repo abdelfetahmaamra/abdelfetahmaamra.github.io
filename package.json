@@ -1,25 +1,35 @@
 {
   "name": "ronaq-el-hayat",
   "version": "1.0.0",
-  "description": "Ronaq El Hayat \u2014 COD parapharmacy store + admin on Convex",
+  "description": "Ronaq El Hayat — COD parapharmacy store + admin on Convex",
   "scripts": {
-    "dev": "convex dev",
+    "dev": "run-p -r dev:backend dev:frontend",
+    "dev:backend": "convex dev",
+    "dev:frontend": "vite",
     "deploy": "convex deploy",
     "seed": "convex run maintenance:seed",
     "test": "vitest run",
-    "typecheck": "tsc -p convex",
-    "build": "node scripts/build.mjs"
+    "typecheck": "tsc -p convex && tsc -p .",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "license": "UNLICENSED",
   "dependencies": {
     "convex": "^1.46.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router": "^8.4.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
     "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
     "convex-test": "^0.0.60",
-    "esbuild": "^0.28.2",
+    "npm-run-all2": "^9.0.3",
+    "vite": "^8.3.1",
     "vitest": "^5.0.2"
   },
   "private": true,
