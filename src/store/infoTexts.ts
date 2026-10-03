@@ -11,17 +11,15 @@ export const INFO: Record<"ar" | "fr", Record<InfoSlug, InfoPage>> = {
   ar: {
     about: {
       title: "من نحن", kicker: "{store}",
-      intro: "{store} بارافارماسي على الإنترنت مخصّصة للمرأة في الجزائر. نجمع لكِ منتجات العناية بالبشرة والشعر، النظافة الحميمة والمكملات الغذائية في مكان واحد، ونوصلها إلى باب بيتكِ في كل الولايات.",
+      intro: "منتجات طبيعية مختارة بعناية للعناية بالجمال، الصحة والمظهر، بجودة واهتمام يليق بك. نقدّم لكم منتجات مميزة تجمع بين المكونات الطبيعية، الجودة والتجربة الجميلة. 💚",
       blocks: [
-        { h: "لماذا أنشأنا المتجر؟", p: ["لأن الحصول على منتجات العناية الجيدة لا يجب أن يكون صعباً، أينما كنتِ في الجزائر. أردنا طريقة بسيطة: تختارين، نتصل بكِ للتأكيد، وتدفعين فقط عند استلام الطرد."] },
         { h: "ما نعدكِ به", list: [
-          "الدفع عند الاستلام: لا بطاقة بنكية ولا دفع مسبق.",
-          "التوصيل إلى 69 ولاية، إلى المنزل أو إلى مكتب التوصيل.",
-          "تأكيد كل طلب عبر الهاتف خلال {confirm} قبل الإرسال.",
-          "تغليف سري بدون أي إشارة إلى محتوى الطرد.",
-          "استبدال المنتج خلال 7 أيام إذا لم يُفتح (انظري صفحة الاستبدال والإرجاع).",
+          "منتجات مختارة بعناية 📦",
+          "مكونات طبيعية 🌿",
+          "جودة واهتمام بالتفاصيل ✨",
+          "للطلب والاستفسار تواصلوا معنا 📩",
         ] },
-        { h: "تنبيه مهم", p: ["المعلومات المقدمة في الموقع للتعريف بالمنتجات فقط، ولا تغني عن استشارة الطبيب أو الصيدلي، خاصة أثناء الحمل أو الرضاعة أو مع علاج طبي."] },
+        { h: "رؤيتنا", p: ["رونق الحياة — لمسة طبيعية لجمال يومك. ✨"] },
       ],
     },
     delivery: {
@@ -101,17 +99,15 @@ export const INFO: Record<"ar" | "fr", Record<InfoSlug, InfoPage>> = {
   fr: {
     about: {
       title: "Qui sommes-nous", kicker: "{store}",
-      intro: "{store} est une parapharmacie en ligne dédiée aux femmes en Algérie. Soins du visage et des cheveux, hygiène intime et compléments alimentaires : tout au même endroit, livré jusqu'à votre porte dans toutes les wilayas.",
+      intro: "Des produits naturels soigneusement sélectionnés pour la beauté, la santé et l'apparence, avec une qualité et une attention que vous méritez. Nous vous proposons des produits exceptionnels alliant ingrédients naturels, qualité et une belle expérience. 💚",
       blocks: [
-        { h: "Pourquoi cette boutique ?", p: ["Parce que trouver de bons produits de soin ne devrait pas être compliqué, où que vous soyez en Algérie. Notre principe est simple : vous choisissez, on vous appelle pour confirmer, et vous payez seulement à la réception du colis."] },
         { h: "Nos engagements", list: [
-          "Paiement à la livraison : ni carte bancaire, ni paiement à l'avance.",
-          "Livraison dans les 69 wilayas, à domicile ou en stop desk.",
-          "Chaque commande confirmée par téléphone sous {confirm} avant l'envoi.",
-          "Emballage discret, sans aucune mention du contenu.",
-          "Échange sous 7 jours pour un produit non ouvert (voir la page Échange et retour).",
+          "Produits soigneusement sélectionnés 📦",
+          "Ingrédients naturels 🌿",
+          "Qualité et attention aux détails ✨",
+          "Pour commander ou vous renseigner, contactez-nous 📩",
         ] },
-        { h: "Important", p: ["Les informations du site servent à présenter les produits et ne remplacent pas l'avis d'un médecin ou d'un pharmacien, notamment pendant la grossesse, l'allaitement ou en cas de traitement."] },
+        { h: "Notre vision", p: ["Ronaq El Hayat — Une touche naturelle pour votre beauté au quotidien. ✨"] },
       ],
     },
     delivery: {

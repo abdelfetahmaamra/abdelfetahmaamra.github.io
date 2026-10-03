@@ -6,6 +6,15 @@ import { CommuneOptions, DrawerHead, errMsg, keep, Loading, remember, Top, useAd
 const num = (v: string) => (v === "" || v == null ? null : Number(v));
 const cell = { width: 110, height: 40, border: "1px solid var(--line2)", borderRadius: 10, padding: "0 10px" } as const;
 
+/** Carrier key field definitions (must match convex/carrierKeys.ts CARRIER_KEY_FIELDS). */
+const KEY_FIELDS: Record<string, { label: string; fields: { key: string; label: string; placeholder?: string; optional?: boolean }[] }> = {
+  yalidine: { label: "Yalidine", fields: [{ key: "YALIDINE_API_ID", label: "API ID" }, { key: "YALIDINE_API_TOKEN", label: "API Token" }, { key: "YALIDINE_BASE_URL", label: "Base URL (proxy)", placeholder: "https://api.yalidine.app/v1", optional: true }, { key: "YALIDINE_PROXY_SECRET", label: "Proxy Secret", optional: true }] },
+  zr_express: { label: "ZR Express", fields: [{ key: "ZR_API_KEY", label: "API Key" }, { key: "ZR_TENANT_ID", label: "Tenant ID" }] },
+  noest: { label: "NOEST Express", fields: [{ key: "NOEST_API_TOKEN", label: "API Token" }, { key: "NOEST_USER_GUID", label: "User GUID" }] },
+  ecotrack: { label: "EcoTrack", fields: [{ key: "ECOTRACK_BASE_URL", label: "Base URL", placeholder: "https://dhd.ecotrack.dz" }, { key: "ECOTRACK_TOKEN", label: "API Token" }, { key: "ECOTRACK_NAME", label: "Carrier Name", placeholder: "DHD", optional: true }] },
+  meta: { label: "Meta Conversions API", fields: [{ key: "META_ACCESS_TOKEN", label: "Access Token" }, { key: "META_PIXEL_ID", label: "Pixel ID" }, { key: "META_TEST_EVENT_CODE", label: "Test Event Code", optional: true }] },
+};
+
 /* ================= Delivery ================= */
 export function Delivery() {
   const { t } = useAdmin();
@@ -15,10 +24,11 @@ export function Delivery() {
     <Top title={t.tabs.delivery}>
       <div className="seg" role="group">
         <button type="button" aria-pressed={sub === "carriers"} onClick={() => pick("carriers")}>{t.dl.carriers}</button>
+        <button type="button" aria-pressed={sub === "keys"} onClick={() => pick("keys")}>{t.dl.apiKeys || "API Keys"}</button>
         <button type="button" aria-pressed={sub === "rates"} onClick={() => pick("rates")}>{t.dl.rates}</button>
       </div>
     </Top>
-    <div id="dbody">{sub === "carriers" ? <Carriers /> : <Rates />}</div>
+    <div id="dbody">{sub === "carriers" ? <Carriers /> : sub === "keys" ? <ApiKeys /> : <Rates />}</div>
   </>);
 }
 
@@ -30,7 +40,6 @@ function Carriers() {
   const canSet = can("settings");
   const withBusy = (k: string, p: Promise<any>) => { setBusy((b) => ({ ...b, [k]: true })); p.finally(() => setBusy((b) => ({ ...b, [k]: false }))); };
   return (<>
-    <p className="muted" style={{ margin: "0 0 12px" }}>{t.dl.envHelp}</p>
     <div className="cards2">
       {d.carriers.map((c: any) => (
         <div className="box" key={c.code}>
@@ -62,6 +71,75 @@ function Carriers() {
       {d.logs.length ? <ul className="hist">{d.logs.map((l: any, i: number) => (
         <li key={i}><b>{l.carrier}</b> · {l.kind} · <span style={{ color: l.ok ? "var(--teal)" : "var(--err)" }}>{l.message}</span><time>{F.dt(l.at)}</time></li>
       ))}</ul> : <p className="muted" style={{ margin: 0 }}>{t.none}</p>}
+    </div>
+  </>);
+}
+
+/* ================= API Keys ================= */
+function ApiKeys() {
+  const { t, flash } = useAdmin(), R = useRun();
+  const saved = useQ(api.carrierKeys.list, {}) as Record<string, Record<string, string>> | undefined;
+  const [edits, setEdits] = useState<Record<string, Record<string, string>>>({});
+  const [saving, setSaving] = useState<Record<string, boolean>>({});
+
+  if (!saved) return <Loading />;
+
+  const val = (carrier: string, key: string) => {
+    if (edits[carrier]?.[key] !== undefined) return edits[carrier][key];
+    return saved[carrier]?.[key] || "";
+  };
+  const set = (carrier: string, key: string, value: string) => {
+    setEdits((e) => ({ ...e, [carrier]: { ...(e[carrier] || {}), [key]: value } }));
+  };
+
+  const saveCarrier = (carrier: string) => {
+    const keys: Record<string, string> = {};
+    for (const f of KEY_FIELDS[carrier].fields) keys[f.key] = val(carrier, f.key);
+    setSaving((s) => ({ ...s, [carrier]: true }));
+    R.runM(api.carrierKeys.save, { carrier, keys } as any).then(() => {
+      setEdits((e) => { const n = { ...e }; delete n[carrier]; return n; });
+      flash(t.saved);
+    }, () => {}).finally(() => setSaving((s) => ({ ...s, [carrier]: false })));
+  };
+
+  return (<>
+    <p className="muted" style={{ margin: "0 0 16px", fontSize: 14 }}>{t.dl.keysHelp || "أضيفي مفاتيح API لشركات التوصيل هنا. بعد الحفظ، اختبري الاتصال من تبويب «شركات التوصيل»."}</p>
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {Object.entries(KEY_FIELDS).map(([carrier, def]) => {
+        const hasKeys = def.fields.some((f) => !f.optional && saved[carrier]?.[f.key] && saved[carrier][f.key] !== "");
+        return (
+          <details key={carrier} className="box" style={{ padding: "14px 18px" }} open={!hasKeys}>
+            <summary style={{ cursor: "pointer", fontWeight: 600, fontSize: 16, minHeight: 40, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span>{def.label}</span>
+              {hasKeys ? <span className="st delivered" style={{ fontSize: 12 }}>{t.dl.connected}</span> : <span className="st cancelled" style={{ fontSize: 12 }}>{t.dl.missing}</span>}
+            </summary>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
+              {def.fields.map((f) => (
+                <div className="f" key={f.key}>
+                  <label htmlFor={"k-" + carrier + "-" + f.key} style={{ fontSize: 14 }}>
+                    {f.label}{f.optional ? <span className="muted"> ({t.optional})</span> : <span style={{ color: "var(--err)" }}> *</span>}
+                  </label>
+                  <input
+                    id={"k-" + carrier + "-" + f.key}
+                    type={f.key.includes("TOKEN") || f.key.includes("SECRET") || f.key.includes("KEY") ? "password" : "text"}
+                    placeholder={f.placeholder || ""}
+                    value={val(carrier, f.key)}
+                    onChange={(e) => set(carrier, f.key, e.target.value)}
+                    dir="ltr"
+                    autoComplete="off"
+                    style={{ fontFamily: "monospace", fontSize: 14 }}
+                  />
+                </div>
+              ))}
+              <div className="acts">
+                <button className="abtn pri" type="button" disabled={saving[carrier]} onClick={() => saveCarrier(carrier)}>
+                  {saving[carrier] ? t.loading : <><Icon n="check" s={18} />{t.save}</>}
+                </button>
+              </div>
+            </div>
+          </details>
+        );
+      })}
     </div>
   </>);
 }

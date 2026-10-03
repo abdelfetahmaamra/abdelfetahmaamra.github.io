@@ -243,4 +243,11 @@ export default defineSchema({
   counters: defineTable({ name: v.string(), value: v.number() }).index("by_name", ["name"]),
 
   rateHits: defineTable({ key: v.string(), at: v.number() }).index("by_key", ["key", "at"]),
+
+  /* ---------- Carrier API keys (editable from admin) ---------- */
+  carrierKeys: defineTable({
+    carrier: v.string(), // yalidine | zr_express | noest | ecotrack | meta
+    keys: v.any(), // JSON object with carrier-specific fields
+    updatedAt: v.number(),
+  }).index("by_carrier", ["carrier"]),
 });

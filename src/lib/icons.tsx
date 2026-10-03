@@ -29,13 +29,9 @@ export function Icon({ n, s = 22, className }: { n: IconName; s?: number; classN
   return <svg className={className} width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML={{ __html: IC[n] }} />;
 }
 
-export function Logo({ s, stroke = "#FBF5F1" }: { s: number; stroke?: string }) {
-  return (
-    <svg width={s} height={Math.round(s * 1.18)} viewBox="0 0 34 40" aria-hidden="true">
-      <path d="M3 38V17a14 14 0 0 1 28 0v21z" fill="#B23A5E" />
-      <path d="M17 16v12M11 22h12" stroke={stroke} strokeWidth={2.6} strokeLinecap="round" />
-    </svg>
-  );
+export function Logo({ s }: { s: number }) {
+  // Use a relative height to prevent layout shifts, maintaining original width proportion
+  return <img src="/logo.png" alt="Ronaq El Hayat" width={Math.round(s * 1.8)} height={s} style={{ objectFit: 'contain' }} />;
 }
 
 export function Sparkle({ l, t, s, c, cls = "" }: { l: string; t: string; s: number; c: string; cls?: string }) {
@@ -51,8 +47,8 @@ export function Pattern() {
     <svg className="pat" aria-hidden="true">
       <defs>
         <pattern id="zl" width="48" height="48" patternUnits="userSpaceOnUse">
-          <rect x="14" y="14" width="20" height="20" fill="none" stroke="#B23A5E" strokeOpacity=".15" />
-          <rect x="14" y="14" width="20" height="20" fill="none" stroke="#B23A5E" strokeOpacity=".15" transform="rotate(45 24 24)" />
+          <rect x="14" y="14" width="20" height="20" fill="none" stroke="#D4A613" strokeOpacity=".15" />
+          <rect x="14" y="14" width="20" height="20" fill="none" stroke="#D4A613" strokeOpacity=".15" transform="rotate(45 24 24)" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill="url(#zl)" />

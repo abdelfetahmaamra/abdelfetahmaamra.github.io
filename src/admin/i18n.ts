@@ -258,6 +258,8 @@ export const L = {
     "S": "الجنوب"
    },
    "envHelp": "تُضاف المفاتيح في Convex › Settings › Environment Variables (انظري README-AR.md).",
+   "apiKeys": "مفاتيح API",
+   "keysHelp": "أضيفي مفاتيح API لشركات التوصيل هنا مباشرة. بعد الحفظ، اختبري الاتصال من تبويب «شركات التوصيل».",
    "meta": "Meta Conversions API",
    "metaOn": "مفعّل",
    "metaOff": "غير مفعّل",
@@ -560,6 +562,8 @@ export const L = {
     "S": "Sud"
    },
    "envHelp": "Les clés s'ajoutent dans Convex › Settings › Environment Variables (voir README-AR.md).",
+   "apiKeys": "Clés API",
+   "keysHelp": "Ajoutez les clés API des transporteurs ici directement. Après l'enregistrement, testez la connexion depuis l'onglet « Transporteurs ».",
    "meta": "Meta Conversions API",
    "metaOn": "Actif",
    "metaOff": "Inactif",

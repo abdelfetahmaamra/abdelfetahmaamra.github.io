@@ -3,7 +3,7 @@ import { action, internalAction, internalMutation, internalQuery, query } from "
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { requireMember } from "./lib/auth";
-import { CARRIERS, getCarrier, type CarrierCode, type ShipmentInput } from "./lib/carriers";
+import { CARRIERS, getCarrier, injectKeys, type CarrierCode, type ShipmentInput } from "./lib/carriers";
 import { normKey, productDescription, randomToken, shipWilaya } from "./lib/util";
 import { wilaya } from "./lib/wilayas";
 import { carrierCode } from "./schema";
@@ -17,10 +17,15 @@ export const carrierList = query({
     const s = await getSettings(ctx);
     const desks = await ctx.db.query("stopDesks").collect();
     const logs = await ctx.db.query("carrierLogs").order("desc").take(30);
+    // Load DB keys so carrier.configured reflects DB-stored keys too
+    const dbRows = await ctx.db.query("carrierKeys").collect();
+    const dbKeys: Record<string, Record<string, string>> = {};
+    for (const row of dbRows) dbKeys[row.carrier] = row.keys as Record<string, string>;
+    injectKeys(dbKeys);
     return {
       defaultCarrier: s.defaultCarrier ?? null,
       carriers: CARRIERS.map((code) => {
-        const c = getCarrier(code);
+        const c = getCarrier(code, dbKeys);
         return { code, label: c.label, configured: c.configured, stopDesks: desks.filter((d) => d.carrier === code).length };
       }),
       logs: logs.map((l) => ({ at: l._creationTime, carrier: l.carrier, kind: l.kind, ok: l.ok, message: l.message })),
@@ -38,8 +43,9 @@ export const testCarrier = action({
   args: { token: v.string(), carrier: carrierCode },
   handler: async (ctx, { token, carrier }): Promise<{ ok: boolean; message: string }> => {
     await ctx.runQuery(internal.auth.assertPerm, { token, perm: "settings" });
-    const c = getCarrier(carrier);
-    if (!c.configured) return { ok: false, message: "API keys are missing in Convex environment variables" };
+    const dbKeys = await ctx.runQuery(internal.carrierKeys.allRaw, {});
+    const c = getCarrier(carrier, dbKeys);
+    if (!c.configured) return { ok: false, message: "API keys are missing — add them in the Delivery tab or Convex environment variables" };
     const r = await c.test();
     await ctx.runMutation(internal.dispatch.log, { carrier, kind: "test", ok: r.ok, message: r.message });
     return r;
@@ -65,7 +71,8 @@ export const dispatchContext = internalQuery({
 });
 
 async function dispatchOne(ctx: any, id: Id<"orders">, carrier: CarrierCode, stationCode: string | undefined, by: string) {
-  const c = getCarrier(carrier);
+  const dbKeys = await ctx.runQuery(internal.carrierKeys.allRaw, {});
+  const c = getCarrier(carrier, dbKeys);
   if (!c.configured) throw new ConvexError({ code: "not_configured", message: `${c.label} API keys are missing` });
   const dc = await ctx.runQuery(internal.dispatch.dispatchContext, { id, carrier });
   if (!dc) throw new ConvexError({ code: "not_found", message: "Order not found" });
@@ -162,7 +169,8 @@ export const label = action({
     const proxy = async () => { const key = randomToken(24); await ctx.runMutation(internal.dispatch.mintLabelToken, { orderId: id, token: key }); return { key }; };
     if (o.carrier === "noest" || o.carrier === "ecotrack") return proxy();
     try {
-      const l = await getCarrier(o.carrier).getLabel(o.tracking, o.carrierParcelId);
+      const dbKeys = await ctx.runQuery(internal.carrierKeys.allRaw, {});
+      const l = await getCarrier(o.carrier, dbKeys).getLabel(o.tracking, o.carrierParcelId);
       return "url" in l ? { url: l.url } : proxy();
     } catch (e: any) { throw new ConvexError({ code: "carrier", message: e.message }); }
   },
@@ -175,7 +183,8 @@ export const revalidate = action({
     await ctx.runQuery(internal.auth.assertPerm, { token, perm: "orders.ship" });
     const o = await ctx.runQuery(internal.orders.forDispatch, { id });
     if (!o?.carrier || !o.tracking) throw new ConvexError({ code: "invalid", message: "No shipment yet" });
-    const c = getCarrier(o.carrier);
+    const dbKeys = await ctx.runQuery(internal.carrierKeys.allRaw, {});
+    const c = getCarrier(o.carrier, dbKeys);
     if (!c.validate) return;
     try { await c.validate(o.tracking); } catch (e: any) { throw new ConvexError({ code: "carrier", message: e.message }); }
     await ctx.runMutation(internal.orders.clearCarrierError, { id });
@@ -204,7 +213,8 @@ export const syncCarrierData = action({
   args: { token: v.string(), carrier: carrierCode },
   handler: async (ctx, { token, carrier }): Promise<{ desks: number; communes: number }> => {
     await ctx.runQuery(internal.auth.assertPerm, { token, perm: "settings" });
-    const c = getCarrier(carrier);
+    const dbKeys = await ctx.runQuery(internal.carrierKeys.allRaw, {});
+    const c = getCarrier(carrier, dbKeys);
     if (!c.configured) throw new ConvexError({ code: "not_configured", message: `${c.label} API keys are missing` });
     let desks = 0, communes = 0;
     try {
@@ -229,8 +239,9 @@ export const syncCarrierData = action({
 export const syncStatuses = internalAction({
   args: {},
   handler: async (ctx) => {
+    const dbKeys = await ctx.runQuery(internal.carrierKeys.allRaw, {});
     for (const code of CARRIERS) {
-      const c = getCarrier(code);
+      const c = getCarrier(code, dbKeys);
       if (!c.configured) continue;
       const batch = await ctx.runQuery(internal.orders.shippedByCarrier, { carrier: code, limit: code === "ecotrack" ? 100 : 40 });
       if (!batch.length) continue;
@@ -262,7 +273,8 @@ export const labelPdf = internalAction({
   handler: async (ctx, { id }): Promise<ArrayBuffer | null> => {
     const o = await ctx.runQuery(internal.orders.forDispatch, { id });
     if (!o?.carrier || !o.tracking) return null;
-    const l = await getCarrier(o.carrier).getLabel(o.tracking, o.carrierParcelId);
+    const dbKeys = await ctx.runQuery(internal.carrierKeys.allRaw, {});
+    const l = await getCarrier(o.carrier, dbKeys).getLabel(o.tracking, o.carrierParcelId);
     if ("pdf" in l) return l.pdf;
     const r = await fetch(l.url);
     return r.ok ? await r.arrayBuffer() : null;

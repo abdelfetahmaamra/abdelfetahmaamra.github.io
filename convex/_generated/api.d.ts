@@ -11,6 +11,7 @@
 import type * as abandoned from "../abandoned.js";
 import type * as auth from "../auth.js";
 import type * as authNode from "../authNode.js";
+import type * as carrierKeys from "../carrierKeys.js";
 import type * as catalog from "../catalog.js";
 import type * as crons from "../crons.js";
 import type * as customers from "../customers.js";
@@ -33,6 +34,8 @@ import type * as settings from "../settings.js";
 import type * as shipping from "../shipping.js";
 import type * as stats from "../stats.js";
 import type * as stock from "../stock.js";
+import type * as tempUpdate from "../tempUpdate.js";
+import type * as wipe from "../wipe.js";
 
 import type {
   ApiFromModules,
@@ -44,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   abandoned: typeof abandoned;
   auth: typeof auth;
   authNode: typeof authNode;
+  carrierKeys: typeof carrierKeys;
   catalog: typeof catalog;
   crons: typeof crons;
   customers: typeof customers;
@@ -66,6 +70,8 @@ declare const fullApi: ApiFromModules<{
   shipping: typeof shipping;
   stats: typeof stats;
   stock: typeof stock;
+  tempUpdate: typeof tempUpdate;
+  wipe: typeof wipe;
 }>;
 
 /**

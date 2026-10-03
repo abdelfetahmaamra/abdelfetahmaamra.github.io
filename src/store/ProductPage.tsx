@@ -43,7 +43,7 @@ export function ProductPage() {
         <div className="up d1 pstick">
           <div className="pimg" style={{ background: tint(p)[2] }}>
             {gal.length ? <img src={gal[img]} alt={tx(p.name)} width={600} height={630} fetchPriority="high" decoding="async" />
-              : <><Pattern /><div className="bt float"><Art p={p} w={200} /></div><Sparkle l="24%" t="26%" s={20} c="#B23A5E" /><Sparkle l="70%" t="36%" s={15} c="#1E5A55" cls="t2" /></>}
+              : <><Pattern /><div className="bt float"><Art p={p} w={200} /></div><Sparkle l="24%" t="26%" s={20} c="#D4A613" /><Sparkle l="70%" t="36%" s={15} c="#015112" cls="t2" /></>}
           </div>
           {gal.length > 1 && (
             <div style={{ display: "flex", gap: 8, marginTop: 10, overflowX: "auto" }}>
@@ -74,7 +74,7 @@ export function ProductPage() {
             </section>
           )}
           {p.usage && tx(p.usage) && (
-            <section className="rv" style={{ marginTop: 24, padding: 18, background: "#F3E9DA", borderRadius: 16 }}><b>{t.usage}</b><p style={{ margin: "6px 0 0", color: "#4A3540" }}>{tx(p.usage)}</p></section>
+            <section className="rv" style={{ marginTop: 24, padding: 18, background: "#FCF6DB", borderRadius: 16 }}><b>{t.usage}</b><p style={{ margin: "6px 0 0", color: "#00370B" }}>{tx(p.usage)}</p></section>
           )}
           <section style={{ marginTop: 40 }}>
             <h2 className="disp rv" style={{ margin: 0, fontSize: 26 }}>{t.faqTitle}</h2>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Icon, Pattern, Sparkle, type IconName } from "../lib/icons";
-import { Art, tint, Visual } from "./art";
+import { Icon, Sparkle, type IconName } from "../lib/icons";
+import { tint, Visual } from "./art";
 import { Steps, useReveal } from "./Layout";
 import { useStore } from "./StoreContext";
 import type { Product } from "./types";
@@ -66,16 +66,11 @@ export function Home() {
           <a className="btn ghost" href="#how">{t.heroCta2}</a>
         </div>
       </div>
-      <div className="stage up d2" aria-hidden="true">
-        <div className="arch"><Pattern /></div><div className="plinth"></div>
-        {b && (<>
-          <div className="b float f2" style={{ left: "17%" }}><Art p={a} w={120} /></div>
-          <div className="b float" style={{ left: "35%", bottom: "11.5%" }}><Art p={b} w={160} /></div>
-          <div className="b float f3" style={{ left: "59%" }}><Art p={c} w={120} /></div>
-        </>)}
-        <Sparkle l="31%" t="19%" s={22} c="#B23A5E" /><Sparkle l="66%" t="30%" s={16} c="#1E5A55" cls="t2" /><Sparkle l="27%" t="52%" s={14} c="#C9955A" cls="t3" />
-        <div className="badge floatB" style={{ left: 0, top: "30%" }}><span className="ic"><Icon n="cash" s={22} /></span><span><b>{t.badge1}</b><span className="muted">{t.badge1s}</span></span></div>
-        <div className="badge float f3" style={{ right: 0, top: "8%" }}><span style={{ color: "var(--rose)" }}><Icon n="truck" s={22} /></span><b>{t.badge2}</b></div>
+      <div className="stage up d2" aria-hidden="true" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <img src="/logo.png" alt="Ronaq El Hayat Logo" style={{ width: '100%', maxWidth: '400px', objectFit: 'contain', filter: 'drop-shadow(0 14px 24px rgba(0,55,11,0.15))' }} className="float" />
+        <Sparkle l="15%" t="19%" s={22} c="#D4A613" /><Sparkle l="80%" t="30%" s={16} c="#015112" cls="t2" /><Sparkle l="27%" t="75%" s={14} c="#B0880B" cls="t3" />
+        <div className="badge floatB" style={{ left: "-5%", top: "60%" }}><span className="ic"><Icon n="cash" s={22} /></span><span><b>{t.badge1}</b><span className="muted">{t.badge1s}</span></span></div>
+        <div className="badge float f3" style={{ right: "-5%", top: "15%" }}><span style={{ color: "var(--rose)" }}><Icon n="truck" s={22} /></span><b>{t.badge2}</b></div>
       </div>
     </div></section>
     <div className="wrap"><div className="trust up d4">
