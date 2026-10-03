@@ -114,6 +114,44 @@ export const deleteProduct = mutation({
   },
 });
 
+/** Permanently removes a product and its stored images. Use with caution — irreversible. */
+export const hardDeleteProduct = mutation({
+  args: { token: v.string(), id: v.id("products") },
+  handler: async (ctx, { token, id }) => {
+    await requireMember(ctx, token, "catalog");
+    const p = await ctx.db.get(id);
+    if (!p) return;
+    // Delete all images from storage
+    for (const img of p.images) {
+      try { await ctx.storage.delete(img); } catch { /* ignore if already gone */ }
+    }
+    await ctx.db.delete(id);
+  },
+});
+
+/** Owner-only: wipe every product and category (use to clear demo/seed data before going live). */
+export const wipeAllProducts = mutation({
+  args: { token: v.string() },
+  handler: async (ctx, { token }) => {
+    const member = await requireMember(ctx, token);
+    if (member.role !== "owner" && member.role !== "manager") {
+      throw new ConvexError({ code: "forbidden", message: "Owner or manager access required" });
+    }
+    const products = await ctx.db.query("products").collect();
+    for (const p of products) {
+      for (const img of p.images) {
+        try { await ctx.storage.delete(img); } catch { /* ignore */ }
+      }
+      await ctx.db.delete(p._id);
+    }
+    const categories = await ctx.db.query("categories").collect();
+    for (const c of categories) {
+      await ctx.db.delete(c._id);
+    }
+    return { deleted: products.length, categories: categories.length };
+  },
+});
+
 export const generateUploadUrl = mutation({
   args: { token: v.string() },
   handler: async (ctx, { token }) => {

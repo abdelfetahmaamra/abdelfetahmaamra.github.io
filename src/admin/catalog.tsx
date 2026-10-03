@@ -86,12 +86,21 @@ function CustomerDrawer({ c }: { c: any }) {
 const TINTS = ["rose", "sage", "sand", "plum", "sky"], SHAPES = ["dropper", "jar", "tube"];
 
 export function Products() {
-  const { t, openDrawer } = useAdmin(), F = useFmt();
+  const { t, ask, flash, openDrawer } = useAdmin(), F = useFmt(), R = useRun();
   const d = useQ(api.catalog.adminProducts, {}) as any;
   const edit = (p: any) => openDrawer(<ProductEditor key={p ? p.id : "new" + Date.now()} p={p} />);
+  const wipeAll = async () => {
+    const yes = await ask(t.prod.wipeAllConfirm);
+    if (!yes) return;
+    try {
+      const res = await R.m(api.catalog.wipeAllProducts, {}) as any;
+      flash(`${t.prod.wipeAll}: ${res.deleted}, ${res.categories}`);
+    } catch { /* error shown by useRun */ }
+  };
   return (<>
     <Top title={t.prod.title}>
       <button className="abtn" type="button" onClick={() => d && openDrawer(<CategoryEditor key="cats" />)}>{t.cat.title}</button>
+      <button className="abtn red" type="button" onClick={wipeAll}>{t.prod.wipeAll}</button>
       <button className="abtn pri" type="button" onClick={() => d && edit(null)}><Icon n="plus" s={18} />{t.prod.new}</button>
     </Top>
     <div id="plist">
@@ -142,7 +151,7 @@ function Area({ id, label, value, onChange }: { id: string; label: string; value
 }
 
 function ProductEditor({ p }: { p: any }) {
-  const { t, flash, closeDrawer } = useAdmin(), F = useFmt(), R = useRun();
+  const { t, flash, ask, closeDrawer } = useAdmin(), F = useFmt(), R = useRun();
   const d = useQ(api.catalog.adminProducts, {}) as any;
   const s = (v: any) => (v == null ? "" : String(v));
   const [v, setV] = useState(() => ({
@@ -228,7 +237,19 @@ function ProductEditor({ p }: { p: any }) {
       <label style={{ display: "flex", gap: 10, alignItems: "center", minHeight: 44 }}><input type="checkbox" checked={v.active} onChange={(e) => set("active")(e.target.checked)} style={{ width: 20, height: 20 }} /> {t.prod.active}</label>
       <label style={{ display: "flex", gap: 10, alignItems: "center", minHeight: 44 }}><input type="checkbox" checked={v.track} onChange={(e) => set("track")(e.target.checked)} style={{ width: 20, height: 20 }} /> {t.prod.track}</label>
       <div className="alert" hidden={!err}>{err}</div>
-      <button className="btn lg" type="submit">{t.save}</button>
+      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+        <button className="btn lg" type="submit" style={{ flex: 1 }}>{t.save}</button>
+        {p && (
+          <button className="abtn red" type="button" style={{ minHeight: 44, padding: "0 18px", fontSize: 15 }}
+            onClick={async () => {
+              const yes = await ask(t.prod.deleteConfirm);
+              if (!yes) return;
+              R.runM(api.catalog.hardDeleteProduct, { id: p.id }).then(closeDrawer, () => {});
+            }}>
+            {t.prod.delete}
+          </button>
+        )}
+      </div>
     </form></div>
   </>);
 }

@@ -215,7 +215,11 @@ export const L = {
    "hidden": "مخفي",
    "archive": "إخفاء",
    "uploading": "جارٍ الرفع…",
-   "main": "رئيسية"
+   "main": "رئيسية",
+   "delete": "حذف نهائي",
+   "deleteConfirm": "هل تريدين حذف هذا المنتج نهائياً؟ لا يمكن التراجع.",
+   "wipeAll": "حذف كل المنتجات",
+   "wipeAllConfirm": "سيتم حذف جميع المنتجات والفئات نهائياً. هل أنتِ متأكدة؟"
   },
   "cat": {
    "title": "الفئات",
@@ -519,7 +523,11 @@ export const L = {
    "hidden": "Masqué",
    "archive": "Masquer",
    "uploading": "Envoi…",
-   "main": "Principale"
+   "main": "Principale",
+   "delete": "Supprimer définitivement",
+   "deleteConfirm": "Supprimer ce produit définitivement ? Cette action est irréversible.",
+   "wipeAll": "Tout supprimer",
+   "wipeAllConfirm": "Tous les produits et catégories seront supprimés définitivement. Êtes-vous sûre ?"
   },
   "cat": {
    "title": "Catégories",
