@@ -23,12 +23,14 @@ export function mapYalidine(status: string): CarrierState {
   return s ? "in_transit" : "unknown";
 }
 
-export function yalidine(): Carrier {
-  const id = process.env.YALIDINE_API_ID ?? "";
-  const token = process.env.YALIDINE_API_TOKEN ?? "";
-  const base = (process.env.YALIDINE_BASE_URL || "https://api.yalidine.app/v1").replace(/\/+$/, "");
+export function yalidine(keys?: Record<string, string>): Carrier {
+  const env = (k: string) => keys?.[k] || process.env[k] || "";
+  const id = env("YALIDINE_API_ID");
+  const token = env("YALIDINE_API_TOKEN");
+  const base = (env("YALIDINE_BASE_URL") || "https://api.yalidine.app/v1").replace(/\/+$/, "");
   const headers: Record<string, string> = { "X-API-ID": id, "X-API-TOKEN": token, "Content-Type": "application/json", Accept: "application/json" };
-  if (process.env.YALIDINE_PROXY_SECRET) headers["X-Proxy-Secret"] = process.env.YALIDINE_PROXY_SECRET;
+  const proxySecret = env("YALIDINE_PROXY_SECRET");
+  if (proxySecret) headers["X-Proxy-Secret"] = proxySecret;
 
   async function call(path: string, init: RequestInit = {}) {
     const r = await http(base + path, { ...init, headers });

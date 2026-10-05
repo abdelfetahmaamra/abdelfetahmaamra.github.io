@@ -34,9 +34,10 @@ function zrPhone(p: string) {
   return "+" + s;
 }
 
-export function zrExpress(): Carrier {
-  const key = process.env.ZR_API_KEY ?? "";
-  const tenant = process.env.ZR_TENANT_ID ?? "";
+export function zrExpress(keys?: Record<string, string>): Carrier {
+  const env = (k: string) => keys?.[k] || process.env[k] || "";
+  const key = env("ZR_API_KEY");
+  const tenant = env("ZR_TENANT_ID");
   const headers = { "X-Api-Key": key, "X-Tenant": tenant, "Content-Type": "application/json", Accept: "application/json" };
   const cityCache = new Map<number, string>();
   let hubCache: any[] | null = null;

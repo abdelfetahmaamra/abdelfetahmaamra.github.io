@@ -12,7 +12,7 @@ export function AddedToast() {
 }
 
 function Card({ p, i }: { p: Product; i: number }) {
-  const { t, tx, money, catName, addToCart, toast } = useStore();
+  const { t, tx, money, lang, catName, addToCart, toast } = useStore();
   const [ok, setOk] = useState(false);
   const href = "/product?p=" + encodeURIComponent(p.slug);
   return (
@@ -22,7 +22,11 @@ function Card({ p, i }: { p: Product; i: number }) {
         <span className="cat">{catName(p.cat)}</span>
         <h3><Link to={href}>{tx(p.name)}</Link></h3>
         <span className="muted" style={{ fontSize: 14 }}>{tx(p.size)}</span>
-        <span className="price">{money(p.price)}{p.compareAt ? <> <s className="muted" style={{ fontSize: 15, fontFamily: "var(--body)" }}>{money(p.compareAt)}</s></> : null}</span>
+        <span className="price" dir="ltr" style={{ unicodeBidi: "isolate" }}>
+            {p.compareAt && lang === "ar" ? <s className="muted" style={{ fontSize: 15, fontFamily: "var(--body)" }}>{money(p.compareAt)}</s> : null}
+            {" "}{money(p.price)}{" "}
+            {p.compareAt && lang !== "ar" ? <s className="muted" style={{ fontSize: 15, fontFamily: "var(--body)" }}>{money(p.compareAt)}</s> : null}
+          </span>
       </div>
       {p.inStock ? (
         <div className="acts">

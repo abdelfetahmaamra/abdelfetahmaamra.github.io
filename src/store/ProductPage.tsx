@@ -59,7 +59,11 @@ export function ProductPage() {
           <span className="up d1" style={{ color: "var(--teal)", fontWeight: 500, fontSize: 14 }}>{catName(p.cat)}{p.size ? " · " + tx(p.size) : ""}</span>
           <h1 className="ptitle up d2">{tx(p.name)}</h1>
           {p.desc && <p className="up d2" style={{ margin: 0, color: "var(--soft)", fontSize: 17, lineHeight: 1.7 }}>{tx(p.desc)}</p>}
-          <div className="pprice up d3" style={{ marginTop: 10 }}>{money(p.price)}{p.compareAt ? <> <s className="muted" style={{ fontSize: 20, fontFamily: "var(--body)" }}>{money(p.compareAt)}</s></> : null}</div>
+          <div className="pprice up d3" style={{ marginTop: 10, direction: "ltr", display: "inline-flex", alignItems: "baseline", gap: 8 }}>
+            {p.compareAt && lang === "ar" ? <s className="muted" style={{ fontSize: 20, fontFamily: "var(--body)" }}>{money(p.compareAt)}</s> : null}
+            {money(p.price)}
+            {p.compareAt && lang !== "ar" ? <s className="muted" style={{ fontSize: 20, fontFamily: "var(--body)" }}>{money(p.compareAt)}</s> : null}
+          </div>
           <div className="minis up d3">
             <span className="mini"><Icon n="cash" />{t.trust[0][0]}</span><span className="mini"><Icon n="truck" />{t.trust[1][0]}</span><span className="mini"><Icon n="box" />{t.trust[3][0]}</span>
           </div>

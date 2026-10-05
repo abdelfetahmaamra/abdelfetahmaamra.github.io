@@ -18,9 +18,10 @@ export function mapNoest(key: string, text: string): CarrierState {
   return k || t ? "in_transit" : "unknown";
 }
 
-export function noest(): Carrier {
-  const token = process.env.NOEST_API_TOKEN ?? "";
-  const guid = process.env.NOEST_USER_GUID ?? "";
+export function noest(keys?: Record<string, string>): Carrier {
+  const env = (k: string) => keys?.[k] || process.env[k] || "";
+  const token = env("NOEST_API_TOKEN");
+  const guid = env("NOEST_USER_GUID");
   const headers = { Authorization: "Bearer " + token, "Content-Type": "application/json", Accept: "application/json" };
 
   async function call(method: string, path: string, body?: unknown) {

@@ -17,16 +17,20 @@ export function attribution() {
   return { utm_source: s.utm_source, utm_medium: s.utm_medium, utm_campaign: s.utm_campaign, utm_content: s.utm_content, fbclid: s.fbclid, ttclid: s.ttclid, landing: s.landing, fbc, fbp: cookie("_fbp"), page: location.href.slice(0, 300) };
 }
 
-let started = false;
+let fbStarted = false;
+let ttStarted = false;
 export function initPixels(S: StoreInfo) {
-  if (started) return; started = true;
   const fb = S.fbPixelId, tt = S.tiktokPixelId;
-  if (fb) {
+  if (fb && !fbStarted) {
+    fbStarted = true;
     /* eslint-disable */
     (function (f: any, b: Document, e: string, v: string) { if (f.fbq) return; const n: any = (f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); }); if (!f._fbq) f._fbq = n; n.push = n; n.loaded = true; n.version = "2.0"; n.queue = []; const t = b.createElement(e) as HTMLScriptElement; t.async = true; t.src = v; const s = b.getElementsByTagName(e)[0]; s.parentNode!.insertBefore(t, s); })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
     window.fbq("init", fb); window.fbq("track", "PageView");
+    /* eslint-enable */
   }
-  if (tt) {
+  if (tt && !ttStarted) {
+    ttStarted = true;
+    /* eslint-disable */
     (function (w: any, d: Document, t: string) { w.TiktokAnalyticsObject = t; const ttq = (w[t] = w[t] || []); ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie"]; ttq.setAndDefer = function (t: any, e: string) { t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))); }; }; for (let i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]); ttq.load = function (e: string) { const n = "https://analytics.tiktok.com/i18n/pixel/events.js"; ttq._i = ttq._i || {}; ttq._i[e] = []; ttq._i[e]._u = n; ttq._t = ttq._t || {}; ttq._t[e] = +new Date(); const o = d.createElement("script"); o.type = "text/javascript"; o.async = true; o.src = n + "?sdkid=" + e + "&lib=" + t; const a = d.getElementsByTagName("script")[0]; a.parentNode!.insertBefore(o, a); }; ttq.load(tt); ttq.page(); })(window, document, "ttq");
     /* eslint-enable */
   }

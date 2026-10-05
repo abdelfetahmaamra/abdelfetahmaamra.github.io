@@ -5,8 +5,9 @@ import { yalidine } from "./yalidine";
 import { zrExpress } from "./zr";
 
 /**
- * Inject DB-stored carrier keys into process.env before reading them.
- * Env vars always take precedence (so Convex Dashboard > DB panel keys).
+ * @deprecated process.env mutation doesn't work in Convex's sandboxed runtime.
+ * Keys are now passed directly to each carrier factory via getCarrier(code, dbKeys).
+ * Kept only for backward-compat with any external callers.
  */
 export function injectKeys(dbKeys?: Record<string, Record<string, string>> | null) {
   if (!dbKeys) return;
@@ -17,13 +18,17 @@ export function injectKeys(dbKeys?: Record<string, Record<string, string>> | nul
   }
 }
 
+/**
+ * Build a carrier adapter. DB keys are passed directly to each factory so they work
+ * even when process.env is read-only (Convex query / action runtime).
+ */
 export function getCarrier(code: CarrierCode, dbKeys?: Record<string, Record<string, string>> | null): Carrier {
-  if (dbKeys) injectKeys(dbKeys);
+  const k = dbKeys ?? {};
   switch (code) {
-    case "yalidine": return yalidine();
-    case "zr_express": return zrExpress();
-    case "noest": return noest();
-    case "ecotrack": return ecotrack();
+    case "yalidine":   return yalidine(k.yalidine);
+    case "zr_express": return zrExpress(k.zr_express);
+    case "noest":      return noest(k.noest);
+    case "ecotrack":   return ecotrack(k.ecotrack);
   }
 }
 export const CARRIERS: CarrierCode[] = ["yalidine", "zr_express", "noest", "ecotrack"];
