@@ -7,6 +7,12 @@
 const VERSION = "__VERSION__";
 const SHELL = ["__SHELL__"];
 
+self.addEventListener("message", (e) => {
+  if (e.data === "SKIP_WAITING" || e.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });

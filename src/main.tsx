@@ -9,7 +9,30 @@ import "./styles/styles.css";
 const conn: any = (navigator as any).connection || {};
 if (conn.saveData || /(^|-)2g|3g/.test(conn.effectiveType || "") || ((navigator as any).deviceMemory && (navigator as any).deviceMemory <= 2)) document.documentElement.classList.add("lite");
 if ("serviceWorker" in navigator && import.meta.env.PROD && location.protocol === "https:") {
-  window.addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").then((reg) => {
+      reg.addEventListener("updatefound", () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener("statechange", () => {
+          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+            newWorker.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
+      });
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: "SKIP_WAITING" });
+      }
+    }).catch(() => {});
+  });
+
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
+  });
 }
 try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch { /* ignore */ }
 captureSource();
